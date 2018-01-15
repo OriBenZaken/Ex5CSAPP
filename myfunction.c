@@ -174,10 +174,10 @@ void smooth(int dim, pixel *src, pixel *dst, int kernelSize, int kernel[kernelSi
             //todo: changed i++ to ++i
             for(ii = max(i-1, 0); ii <= min(i+1, dim-1); ++ii) {
                 jj = max(j-1, 0);
-                int limitIteration = min(j+1, dim-1);
-                for(; jj <= limitIteration; ++jj) {
+                //int limitIteration = min(j+1, dim-1);
+                /*for(; jj <= limitIteration; ++jj) {
 
-/*                    int kRow, kCol;
+                    int kRow, kCol;
 
                     // compute row index in kernel
                     if (ii < i) {
@@ -195,29 +195,28 @@ void smooth(int dim, pixel *src, pixel *dst, int kernelSize, int kernel[kernelSi
                         kCol = 2;
                     } else {
                         kCol = 1;
-                    }*/
+                    }
 
                     // apply kernel on pixel at [ii,jj]
                     //todo: פונקציה מיותרת
                     //sum_pixels_by_weight(&sum, src[calcIndex(ii, jj, dim)], kernel[kRow][kCol]);
                     pixel p = src[calcIndex(ii, jj, dim)];
-                    //printf("%x : %x\n", src + (sizeof(pixel) * calcIndex(ii, jj, dim)),pp  );
 
                     //int weight = kernel[kRow][kCol];
                     sum.red += ((int) p.red);
                     sum.green += ((int) p.green);
                     sum.blue += ((int) p.blue);
                     //sum.num++;
-                }
-/*				int index = calcIndex(ii, jj, dim);
+                } */
+				int index = calcIndex(ii, jj, dim);
 				pixel p1 = src[index];
 				pixel p2 = src[index + 1];
 				pixel p3 = src[index + 2];
 
-				sum.red += ((int) p1.red) + ((int) p2.red) + ((int) p2.red);
-				sum.green += ((int) p1.green) + ((int) p2.green) + ((int) p2.green);
+				sum.red += ((int) p1.red) + ((int) p2.red) + ((int) p3.red);
+				sum.green += ((int) p1.green) + ((int) p2.green) + ((int) p3.green);
 				sum.blue += ((int) p1.blue) + ((int) p2.blue) + ((int) p3.blue);
-				sum.num += 3;*/
+				//sum.num += 3;
             }
 
             // assign kernel's result to pixel at [i,j]
@@ -253,7 +252,7 @@ void smooth2(int dim, pixel *src, pixel *dst, int kernelSize, int kernel[kernelS
     int limit = dim - kernelSize / 2;
 
     int weight = -1;
-
+    int flag9;
     //todo: changed i++ to ++i
     for (; i < limit; ++i) {
         j =  baseJ;
@@ -276,14 +275,15 @@ void smooth2(int dim, pixel *src, pixel *dst, int kernelSize, int kernel[kernelS
             sum.green = 0;
 
             //todo: changed i++ to ++i
+            flag9 = 1;
             for(ii = max(i-1, 0); ii <= min(i+1, dim-1); ++ii) {
                 jj = max(j-1, 0);
                 int limitIteration = min(j+1, dim-1);
                 //pixel* pp = src + (sizeof(pixel) * calcIndex(ii, jj, dim));
-                for(; jj <= limitIteration; ++jj) {
+                /*for(; jj <= limitIteration; ++jj) {
                     //int kRow, kCol;
 
-                   /* // compute row index in kernel
+                    // compute row index in kernel
                     if (ii < i) {
                         kRow = 0;
                     } else if (ii > i) {
@@ -299,7 +299,7 @@ void smooth2(int dim, pixel *src, pixel *dst, int kernelSize, int kernel[kernelS
                         kCol = 2;
                     } else {
                         kCol = 1;
-                    }*/
+                    }
 
                     if (i == ii && j == jj) {
                         weight = 9;
@@ -315,7 +315,21 @@ void smooth2(int dim, pixel *src, pixel *dst, int kernelSize, int kernel[kernelS
                     sum.blue += ((int) p.blue) * weight;
                     //sum.num++;
                     weight = -1;
+                }*/
+                int index = calcIndex(ii, jj, dim);
+                pixel p1 = src[index];
+                pixel p2 = src[index + 1];
+                pixel p3 = src[index + 2];
+                if (flag9 != 2) {
+                    sum.red += -(((int) p1.red) + ((int) p2.red) + ((int) p3.red));
+                    sum.green += -(((int) p1.green) + ((int) p2.green) + ((int) p3.green));
+                    sum.blue += -(((int) p1.blue) + ((int) p2.blue) + ((int) p3.blue));
+                } else {
+                    sum.red += -(((int) p1.red) + ((int) p3.red)) + 9*((int) p2.red);
+                    sum.green += -(((int) p1.green) + ((int) p3.green)) + 9*((int) p2.green);
+                    sum.blue += -(((int) p1.blue) + ((int) p3.blue)) + 9*((int) p2.blue);
                 }
+                flag9++;
             }
 
 
