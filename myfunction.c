@@ -63,6 +63,7 @@ static void sum_pixels_by_weight(pixel_sum *sum, pixel p, int weight) {
 	return;
 }
 
+//todo: פונקציה מיותרת
 /*
  *  Applies kernel for pixel at (i,j)
  */
@@ -148,7 +149,8 @@ void smooth(int dim, pixel *src, pixel *dst, int kernelSize, int kernel[kernelSi
 	i = kernelSize / 2;
 	int baseJ = i; // j = kernelSize / 2;
 	int limit = dim - kernelSize / 2;
-	//todo: changed i++ to ++i
+    //int weight = 1;
+    //todo: changed i++ to ++i
 	for (; i < limit; ++i) {
 		j =  baseJ;
         int index = calcIndex(i, j, dim);
@@ -175,7 +177,7 @@ void smooth(int dim, pixel *src, pixel *dst, int kernelSize, int kernel[kernelSi
                 //pixel* pp = src + (sizeof(pixel) * calcIndex(ii, jj, dim));
                 for(; jj <= limitIteration; ++jj) {
 
-                    int kRow, kCol;
+/*                    int kRow, kCol;
 
                     // compute row index in kernel
                     if (ii < i) {
@@ -193,7 +195,7 @@ void smooth(int dim, pixel *src, pixel *dst, int kernelSize, int kernel[kernelSi
                         kCol = 2;
                     } else {
                         kCol = 1;
-                    }
+                    }*/
 
                     // apply kernel on pixel at [ii,jj]
                     //todo: פונקציה מיותרת
@@ -203,10 +205,10 @@ void smooth(int dim, pixel *src, pixel *dst, int kernelSize, int kernel[kernelSi
                     //pixel p = *pp;
 
                     //pp += sizeof(pixel);
-                    int weight = kernel[kRow][kCol];
-                    sum.red += ((int) p.red) * weight;
-                    sum.green += ((int) p.green) * weight;
-                    sum.blue += ((int) p.blue) * weight;
+                    //int weight = kernel[kRow][kCol];
+                    sum.red += ((int) p.red);
+                    sum.green += ((int) p.green);
+                    sum.blue += ((int) p.blue);
                     sum.num++;
                 }
             }
@@ -229,6 +231,107 @@ void smooth(int dim, pixel *src, pixel *dst, int kernelSize, int kernel[kernelSi
             ++index;
 		}
 	}
+}
+
+/*
+* Apply the kernel over each pixel.
+* Ignore pixels where the kernel exceeds bounds. These are pixels with row index smaller than kernelSize/2 and/or
+* column index smaller than kernelSize/2
+*/
+void smooth2(int dim, pixel *src, pixel *dst, int kernelSize, int kernel[kernelSize][kernelSize], int kernelScale) {
+    //todo: optimizations here
+    int i, j;
+    i = kernelSize / 2;
+    int baseJ = i; // j = kernelSize / 2;
+    int limit = dim - kernelSize / 2;
+
+    int weight = -1;
+
+    //todo: changed i++ to ++i
+    for (; i < limit; ++i) {
+        j =  baseJ;
+        int index = calcIndex(i, j, dim);
+        for (; j < limit; ++j) {
+            //dst[calcIndex(i, j, dim)] = applyKernel(dim, i, j, src, kernelSize, kernel, kernelScale);
+            //dst[index] = applyKernel(dim, i, j, src, kernelSize, kernel, kernelScale);
+
+            //
+            int ii, jj;
+            int currRow, currCol;
+            pixel_sum sum;
+            pixel current_pixel;
+
+            //todo: פונקציה מיותרת
+            //initialize_pixel_sum(&sum);
+            sum.num = 0;
+            sum.red = 0;
+            sum.blue = 0;
+            sum.green = 0;
+
+            //todo: changed i++ to ++i
+            for(ii = max(i-1, 0); ii <= min(i+1, dim-1); ++ii) {
+                jj = max(j-1, 0);
+                int limitIteration = min(j+1, dim-1);
+                //pixel* pp = src + (sizeof(pixel) * calcIndex(ii, jj, dim));
+                for(; jj <= limitIteration; ++jj) {
+                    //int kRow, kCol;
+
+                   /* // compute row index in kernel
+                    if (ii < i) {
+                        kRow = 0;
+                    } else if (ii > i) {
+                        kRow = 2;
+                    } else {
+                        kRow = 1;
+                    }
+
+                    // compute column index in kernel
+                    if (jj < j) {
+                        kCol = 0;
+                    } else if (jj > j) {
+                        kCol = 2;
+                    } else {
+                        kCol = 1;
+                    }*/
+
+                    if (i == ii && j == jj) {
+                        weight = 9;
+                    }
+
+                    // apply kernel on pixel at [ii,jj]
+                    //todo: פונקציה מיותרת
+                    //sum_pixels_by_weight(&sum, src[calcIndex(ii, jj, dim)], kernel[kRow][kCol]);
+                    pixel p = src[calcIndex(ii, jj, dim)];
+                    //int weight = kernel[kRow][kCol];
+                    sum.red += ((int) p.red) * weight;
+                    sum.green += ((int) p.green) * weight;
+                    sum.blue += ((int) p.blue) * weight;
+                    sum.num++;
+                    weight = -1;
+                }
+            }
+
+
+            // assign kernel's result to pixel at [i,j]
+            //assign_sum_to_pixel(&current_pixel, sum, kernelScale);
+
+            // todo: מיותר מכיוון ש סקייל = 1
+/*            // divide by kernel's weight
+            sum.red = sum.red / kernelScale;
+            sum.green = sum.green / kernelScale;
+            sum.blue = sum.blue / kernelScale;*/
+
+            // truncate each pixel's color values to match the range [0,255]
+            current_pixel.red = (unsigned char) (min(max(sum.red, 0), 255));
+            current_pixel.green = (unsigned char) (min(max(sum.green, 0), 255));
+            current_pixel.blue = (unsigned char) (min(max(sum.blue, 0), 255));
+            //
+
+            dst[index] = current_pixel;
+            ++index;
+        }
+    }
+
 }
 
 void charsToPixels(Image *charsImg, pixel* pixels) {
@@ -313,8 +416,12 @@ void doConvolution(Image *image, int kernelSize, int kernel[kernelSize][kernelSi
     memcpy(backupOrg, pixelsImg, m*n*3);
 
 	//copyPixels(pixelsImg, backupOrg);
+    if (kernelScale == 9) {
+        smooth(m, backupOrg, pixelsImg, kernelSize, kernel, kernelScale);
+    } else {
+        smooth2(m, backupOrg, pixelsImg, kernelSize, kernel, kernelScale);
 
-	smooth(m, backupOrg, pixelsImg, kernelSize, kernel, kernelScale);
+    }
 
 	//pixelsToChars(pixelsImg, image);
 
