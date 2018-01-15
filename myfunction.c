@@ -17,7 +17,8 @@ typedef struct {
     int red;
     int green;
     int blue;
-    int num;
+	//todo : remove anything connetected to num
+    //int num;
 } pixel_sum;
 
 
@@ -30,7 +31,7 @@ typedef struct {
  */
 void initialize_pixel_sum(pixel_sum *sum) {
 	sum->red = sum->green = sum->blue = 0;
-	sum->num = 0;
+	//sum->num = 0;
 	return;
 }
 
@@ -59,7 +60,7 @@ static void sum_pixels_by_weight(pixel_sum *sum, pixel p, int weight) {
 	sum->red += ((int) p.red) * weight;
 	sum->green += ((int) p.green) * weight;
 	sum->blue += ((int) p.blue) * weight;
-	sum->num++;
+	//sum->num++;
 	return;
 }
 
@@ -76,7 +77,7 @@ static pixel applyKernel(int dim, int i, int j, pixel *src, int kernelSize, int 
 
     //todo: פונקציה מיותרת
 	//initialize_pixel_sum(&sum);
-    sum.num = 0;
+    //sum.num = 0;
     sum.red = 0;
     sum.blue = 0;
     sum.green = 0;
@@ -119,7 +120,7 @@ static pixel applyKernel(int dim, int i, int j, pixel *src, int kernelSize, int 
 			sum.red += ((int) p.red) * weight;
 			sum.green += ((int) p.green) * weight;
 			sum.blue += ((int) p.blue) * weight;
-			sum.num++;
+			//sum.num++;
 		}
 	}
 
@@ -166,7 +167,7 @@ void smooth(int dim, pixel *src, pixel *dst, int kernelSize, int kernel[kernelSi
 
             //todo: פונקציה מיותרת
             //initialize_pixel_sum(&sum);
-            sum.num = 0;
+            //sum.num = 0;
             sum.red = 0;
             sum.blue = 0;
             sum.green = 0;
@@ -174,7 +175,6 @@ void smooth(int dim, pixel *src, pixel *dst, int kernelSize, int kernel[kernelSi
             for(ii = max(i-1, 0); ii <= min(i+1, dim-1); ++ii) {
                 jj = max(j-1, 0);
                 int limitIteration = min(j+1, dim-1);
-                //pixel* pp = src + (sizeof(pixel) * calcIndex(ii, jj, dim));
                 for(; jj <= limitIteration; ++jj) {
 
 /*                    int kRow, kCol;
@@ -202,15 +202,22 @@ void smooth(int dim, pixel *src, pixel *dst, int kernelSize, int kernel[kernelSi
                     //sum_pixels_by_weight(&sum, src[calcIndex(ii, jj, dim)], kernel[kRow][kCol]);
                     pixel p = src[calcIndex(ii, jj, dim)];
                     //printf("%x : %x\n", src + (sizeof(pixel) * calcIndex(ii, jj, dim)),pp  );
-                    //pixel p = *pp;
 
-                    //pp += sizeof(pixel);
                     //int weight = kernel[kRow][kCol];
                     sum.red += ((int) p.red);
                     sum.green += ((int) p.green);
                     sum.blue += ((int) p.blue);
-                    sum.num++;
+                    //sum.num++;
                 }
+/*				int index = calcIndex(ii, jj, dim);
+				pixel p1 = src[index];
+				pixel p2 = src[index + 1];
+				pixel p3 = src[index + 2];
+
+				sum.red += ((int) p1.red) + ((int) p2.red) + ((int) p2.red);
+				sum.green += ((int) p1.green) + ((int) p2.green) + ((int) p2.green);
+				sum.blue += ((int) p1.blue) + ((int) p2.blue) + ((int) p3.blue);
+				sum.num += 3;*/
             }
 
             // assign kernel's result to pixel at [i,j]
@@ -263,7 +270,7 @@ void smooth2(int dim, pixel *src, pixel *dst, int kernelSize, int kernel[kernelS
 
             //todo: פונקציה מיותרת
             //initialize_pixel_sum(&sum);
-            sum.num = 0;
+            //sum.num = 0;
             sum.red = 0;
             sum.blue = 0;
             sum.green = 0;
@@ -306,7 +313,7 @@ void smooth2(int dim, pixel *src, pixel *dst, int kernelSize, int kernel[kernelS
                     sum.red += ((int) p.red) * weight;
                     sum.green += ((int) p.green) * weight;
                     sum.blue += ((int) p.blue) * weight;
-                    sum.num++;
+                    //sum.num++;
                     weight = -1;
                 }
             }
