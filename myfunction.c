@@ -173,42 +173,8 @@ void smooth(int dim, pixel *src, pixel *dst) {
             sum.blue = 0;
             sum.green = 0;
             //todo: changed i++ to ++i
-            for(ii = max(i-1, 0); ii <= min(i+1, dim-1); ++ii) {
+/*            for(ii = max(i-1, 0); ii <= min(i+1, dim-1); ++ii) {
                 jj = max(j-1, 0);
-                //int limitIteration = min(j+1, dim-1);
-                /*for(; jj <= limitIteration; ++jj) {
-
-                    int kRow, kCol;
-
-                    // compute row index in kernel
-                    if (ii < i) {
-                        kRow = 0;
-                    } else if (ii > i) {
-                        kRow = 2;
-                    } else {
-                        kRow = 1;
-                    }
-
-                    // compute column index in kernel
-                    if (jj < j) {
-                        kCol = 0;
-                    } else if (jj > j) {
-                        kCol = 2;
-                    } else {
-                        kCol = 1;
-                    }
-
-                    // apply kernel on pixel at [ii,jj]
-                    //todo: פונקציה מיותרת
-                    //sum_pixels_by_weight(&sum, src[calcIndex(ii, jj, dim)], kernel[kRow][kCol]);
-                    pixel p = src[calcIndex(ii, jj, dim)];
-
-                    //int weight = kernel[kRow][kCol];
-                    sum.red += ((int) p.red);
-                    sum.green += ((int) p.green);
-                    sum.blue += ((int) p.blue);
-                    //sum.num++;
-                } */
 				int index = calcIndex(ii, jj, dim);
 				pixel p1 = src[index];
 				pixel p2 = src[index + 1];
@@ -218,7 +184,30 @@ void smooth(int dim, pixel *src, pixel *dst) {
 				sum.green += ((int) p1.green) + ((int) p2.green) + ((int) p3.green);
 				sum.blue += ((int) p1.blue) + ((int) p2.blue) + ((int) p3.blue);
 				//sum.num += 3;
-            }
+            }*/
+            ii = max(i-1, 0);
+            jj = max(j-1, 0);
+            int index1 = calcIndex(ii, jj, dim);
+            pixel p1 = src[index1];
+            pixel p2 = src[index1 + 1];
+            pixel p3 = src[index1 + 2];
+            pixel p4 = src[index1 + dim];
+            pixel p5 = src[index1 + dim + 1];
+            pixel p6 = src[index1 + dim + 2];
+            pixel p7 = src[index1 + dim + dim];
+            pixel p8 = src[index1 + dim + dim + 1];
+            pixel p9 = src[index1 + dim + dim + 2];
+
+            sum.red = ((int) p1.red) + ((int) p2.red) + ((int) p3.red)+
+                    ((int) p4.red) + ((int) p5.red) + ((int) p6.red) +
+                    ((int) p7.red) + ((int) p8.red) + ((int) p9.red);
+            sum.green = ((int) p1.green) + ((int) p2.green) + ((int) p3.green) +
+                    ((int) p4.green) + ((int) p5.green) + ((int) p6.green) +
+                    ((int) p7.green) + ((int) p8.green) + ((int) p9.green);
+            sum.blue = ((int) p1.blue) + ((int) p2.blue) + ((int) p3.blue) +
+                    ((int) p4.blue) + ((int) p5.blue) + ((int) p6.blue) +
+                    ((int) p7.blue) + ((int) p8.blue) + ((int) p9.blue);
+            //sum.num += 3;
 
             // assign kernel's result to pixel at [i,j]
             //assign_sum_to_pixel(&current_pixel, sum, kernelScale);
@@ -274,13 +263,13 @@ void smooth2(int dim, pixel *src, pixel *dst) {
             sum.blue = 0;
             sum.green = 0;
 
-            //todo: changed i++ to ++i
+/*            //todo: changed i++ to ++i
             flag9 = 1;
             for(ii = max(i-1, 0); ii <= min(i+1, dim-1); ++ii) {
                 jj = max(j-1, 0);
                 int limitIteration = min(j+1, dim-1);
                 //pixel* pp = src + (sizeof(pixel) * calcIndex(ii, jj, dim));
-                /*for(; jj <= limitIteration; ++jj) {
+                *//*for(; jj <= limitIteration; ++jj) {
                     //int kRow, kCol;
 
                     // compute row index in kernel
@@ -315,7 +304,7 @@ void smooth2(int dim, pixel *src, pixel *dst) {
                     sum.blue += ((int) p.blue) * weight;
                     //sum.num++;
                     weight = -1;
-                }*/
+                }*//*
                 int index = calcIndex(ii, jj, dim);
                 pixel p1 = src[index];
                 pixel p2 = src[index + 1];
@@ -330,7 +319,29 @@ void smooth2(int dim, pixel *src, pixel *dst) {
                     sum.blue += -(((int) p1.blue) + ((int) p3.blue)) + 9*((int) p2.blue);
                 }
                 flag9++;
-            }
+            }*/
+            ii = max(i-1, 0);
+            jj = max(j-1, 0);
+            int index1 = calcIndex(ii, jj, dim);
+            pixel p1 = src[index1];
+            pixel p2 = src[index1 + 1];
+            pixel p3 = src[index1 + 2];
+            pixel p4 = src[index1 + dim];
+            pixel p5 = src[index1 + dim + 1];
+            pixel p6 = src[index1 + dim + 2];
+            pixel p7 = src[index1 + dim + dim];
+            pixel p8 = src[index1 + dim + dim + 1];
+            pixel p9 = src[index1 + dim + dim + 2];
+
+            sum.red = -(((int) p1.red) + ((int) p2.red) + ((int) p3.red)+
+                      ((int) p4.red) +  ((int) p6.red) +
+                      ((int) p7.red) + ((int) p8.red) + ((int) p9.red)) + 9*((int) p5.red);
+            sum.green = -(((int) p1.green) + ((int) p2.green) + ((int) p3.green) +
+                        ((int) p4.green) + ((int) p6.green) +
+                        ((int) p7.green) + ((int) p8.green) + ((int) p9.green)) + 9*((int) p5.green);
+            sum.blue = -(((int) p1.blue) + ((int) p2.blue) + ((int) p3.blue) +
+                       ((int) p4.blue) + ((int) p6.blue) +
+                       ((int) p7.blue) + ((int) p8.blue) + ((int) p9.blue)) + 9*((int) p5.blue);
 
             // assign kernel's result to pixel at [i,j]
             //assign_sum_to_pixel(&current_pixel, sum, kernelScale);
@@ -481,7 +492,6 @@ void pixelsSum(int dim, pixel *src, pixel_sum *dst) {
         for (; j < limit; ++j) {
             int ii, jj;
             pixel_sum sum;
-            pixel_sum current_pixel;
             sum.red = 0;
             sum.blue = 0;
             sum.green = 0;
@@ -494,16 +504,9 @@ void pixelsSum(int dim, pixel *src, pixel_sum *dst) {
                 sum.red += ((int) p1.red) + ((int) p2.red) + ((int) p3.red);
                 sum.green += ((int) p1.green) + ((int) p2.green) + ((int) p3.green);
                 sum.blue += ((int) p1.blue) + ((int) p2.blue) + ((int) p3.blue);
-                //sum.num += 3;
             }
             // truncate each pixel's color values to match the range [0,255]
-
-            current_pixel.red = sum.red;
-            current_pixel.green = sum.green;
-            current_pixel.blue = sum.blue;
-            //
-
-            dst[index] = current_pixel;
+            dst[index] = sum;
             ++index;
         }
     }
@@ -610,6 +613,7 @@ void doConvolution(Image *image, int kernelScale) {
 
 
 
+
 void myfunction(Image *image, char* srcImgpName, char* blurRsltImgName, char* sharpRsltImgName) {
 
     /*
@@ -627,7 +631,7 @@ void myfunction(Image *image, char* srcImgpName, char* blurRsltImgName, char* sh
     //int sharpKernel[3][3] = {{-1,-1,-1},{-1,9,-1},{-1,-1,-1}};
 
     // blur image
-    doConvolution(image,  9);
+    doConvolution(image, 9);
 
     // write result image to file
     writeBMP(image, srcImgpName, blurRsltImgName);
@@ -635,7 +639,7 @@ void myfunction(Image *image, char* srcImgpName, char* blurRsltImgName, char* sh
     //smooth(m, backupOrg, pixelsImg, kernelSize, sharpKernel, 1);
 
     // sharpen the resulting image
-    doConvolution(image,  1);
+    doConvolution(image, 1);
 
     // write result image to file
     writeBMP(image, srcImgpName, sharpRsltImgName);
