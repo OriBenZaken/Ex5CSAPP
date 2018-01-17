@@ -35,8 +35,10 @@ void blurImg(int dim, pixel *src, pixel *dst) {
 	int limit = dim - 1;
     //int weight = 1;
     //todo: changed i++ to ++i
-
-	for (; i < limit; ++i) {
+    //todo: out of the loop
+    pixel_sum sum;
+    pixel current_pixel;
+    for (; i < limit; ++i) {
 		j =  1;
         int index = calcIndex(i, j, dim);
 		for (; j < limit; ++j) {
@@ -46,15 +48,13 @@ void blurImg(int dim, pixel *src, pixel *dst) {
             //
             //int ii, jj;
             //int currRow, currCol;
-            pixel_sum sum;
-            pixel current_pixel;
 
             //todo: פונקציה מיותרת
             //initialize_pixel_sum(&sum);
-            //sum.num = 0;
+/*            //sum.num = 0;
             sum.red = 0;
             sum.blue = 0;
-            sum.green = 0;
+            sum.green = 0;*/
             //todo: changed i++ to ++i
 
             //ii = max(i-1, 0);
@@ -153,10 +153,11 @@ void sharpImg(int dim, pixel *src, pixel *dst) {
     i = 1;
     int baseJ = i; // j = kernelSize / 2;
     int limit = dim - 1;
-
-    int weight = -1;
-    int flag9;
     //todo: changed i++ to ++i
+
+    //todo: out of the loop
+    pixel_sum sum;
+    pixel current_pixel;
     for (; i < limit; ++i) {
         j =  baseJ;
         int index = calcIndex(i, j, dim);
@@ -166,16 +167,13 @@ void sharpImg(int dim, pixel *src, pixel *dst) {
 
             //
             int ii, jj;
-            int currRow, currCol;
-            pixel_sum sum;
-            pixel current_pixel;
 
             //todo: פונקציה מיותרת
             //initialize_pixel_sum(&sum);
             //sum.num = 0;
-            sum.red = 0;
+/*            sum.red = 0;
             sum.blue = 0;
-            sum.green = 0;
+            sum.green = 0;*/
 
             //todo: changed i++ to ++i
             //ii = max(i-1, 0);
